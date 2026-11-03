@@ -1,0 +1,57 @@
+name: Windows EXE (Spider Solitaire)
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  windows-x64:
+    name: Build portable Windows x64 app
+    runs-on: windows-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Build single-file Windows app
+        shell: pwsh
+        run: |
+          dotnet restore windows/OmasSpiderSolitaire.csproj
+          if ($LASTEXITCODE -ne 0) { throw "NuGet restore failed" }
+          dotnet publish windows/OmasSpiderSolitaire.csproj --no-restore -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=none -p:DebugSymbols=false -o publish
+          if ($LASTEXITCODE -ne 0) { throw "Windows publish failed" }
+
+      - name: Create downloadable ZIP
+        shell: pwsh
+        run: |
+          $exe = 'publish/OmasSpiderSolitaire.exe'
+          if (-not (Test-Path $exe)) { throw "Expected Windows EXE missing" }
+          New-Item -ItemType Directory -Force -Path release | Out-Null
+          Compress-Archive -Path 'publish/*' -DestinationPath 'release/Omas-Spider-Solitaire-v3.2-win-x64.zip' -Force
+          Get-ChildItem publish | Select-Object Name,Length | Format-Table
+
+      - name: Upload Windows download
+        uses: actions/upload-artifact@v4
+        with:
+          name: Omas-Spider-Solitaire-Windows-x64
+          path: release/Omas-Spider-Solitaire-v3.2-win-x64.zip
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Publish release for version tags
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create $env:GITHUB_REF_NAME 'release/Omas-Spider-Solitaire-v3.2-win-x64.zip' --verify-tag --title "Oma's Spider Solitaire $env:GITHUB_REF_NAME" --notes "Windows x64, portable, volledig offline spel. Niet digitaal ondertekend; Microsoft SmartScreen kan een waarschuwing tonen."
+          if ($LASTEXITCODE -ne 0) { throw "Release creation failed" }
