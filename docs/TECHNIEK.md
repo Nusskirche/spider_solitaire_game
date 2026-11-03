@@ -1,28 +1,36 @@
 # Technische toelichting
 
-## Architectuur
-- Eén lokaal HTML-bestand met eigen CSS en JavaScript.
-- Geen externe bibliotheken, CDN, externe geluiden of internetverzoeken.
-- Spelmotor: 104 kaarten, tableau van 10 kolommen, 50 voorraadkaarten, 8 te verzamelen reeksen.
-- Lokale opslag via `localStorage`.
-- Audio-effecten via Web Audio API; animaties via CSS en Web Animations API.
+## Spelmotor en interface
 
-## Regels
-- Kaarten mogen op een kaart van één rang hoger worden gelegd.
-- Een meervoudige reeks kan alleen samen worden verplaatst als rang en kaartsoort doorlopend kloppen.
-- Een complete aflopende K–A-reeks van dezelfde soort wordt verzameld.
-- Nieuwe kaarten mogen pas worden gedeeld als alle tien kolommen een kaart bevatten.
-- Ongedaan maken herstelt de spelstatus uit een geschiedenis.
+- Een lokaal HTML-bestand met eigen CSS en JavaScript.
+- Geen externe JavaScript-bibliotheken, CDN, geluidbestanden of netwerkverzoeken.
+- 104 kaarten, tien kolommen, 50 voorraadkaarten, acht te verzamelen K–A-reeksen.
+- Browser-`localStorage` bewaart spelstand, instellingen en statistieken.
+- Web Audio API en Web Animations API zorgen voor geluid en animaties.
 
-## Bewaren en upgraden
-- De browser bepaalt de opslaglocatie van `localStorage`, ook bij lokale `file://`-bestanden.
-- Houd dezelfde browser en bestandslocatie aan wanneer bestaande voortgang belangrijk is.
-- Verwijder niet zonder meer opgeslagen browsergegevens.
+## Windows-app
 
-## Veiligheid en distributie
-- De HTML-versie heeft geen installatie nodig.
-- De afzonderlijke Windows-EXE was een launcher; reproduceerbare launcherbroncode staat nog niet in deze repository.
-- Een digitale codehandtekening is niet aanwezig. SmartScreen en antivirus horen ingeschakeld te blijven.
+- Broncode in [`windows/`](../windows/).
+- Windows Forms op .NET 10 met Microsoft WebView2, self-contained `win-x64`.
+- `SpiderSolitaire.html` is ingebed in het programma en wordt lokaal uitgepakt onder `%LOCALAPPDATA%\OmasSpiderSolitaire\Game`.
+- WebView2 bewaart zijn profiel onder `%LOCALAPPDATA%\OmasSpiderSolitaire\WebView2Profile`.
+- Het spel wordt geladen met een stabiele virtuele host (`https://spider-solitaire.example/`) die uitsluitend naar de lokale Game-map verwijst.
+- Externe navigatie en nieuwe vensters worden geblokkeerd.
+- WebView2 Runtime moet op de Windows-computer aanwezig zijn.
 
-## Verdere ontwikkeling
-Een mogelijke vervolgstap is het scheiden van spelmotor, weergave en tests, met een reproduceerbare Windows-build en een teststraat.
+## Automatisch bouwen
+
+- GitHub Actions: [`.github/workflows/build-windows.yml`](../.github/workflows/build-windows.yml).
+- Bij wijzigingen op `main` en bij handmatig starten wordt een Windows-app gebouwd; de ZIP is als workflow-artifact beschikbaar.
+- Een Git-tag die begint met `v` probeert daarnaast een GitHub Release te publiceren.
+- Een GitHub Actions-build betekent **niet** dat de EXE digitaal is ondertekend.
+
+## Voortgang
+
+De bestaande HTML-versie en oudere Edge-launcher kunnen andere opslagprofielen gebruiken; die data wordt niet automatisch meegenomen. Nieuwe builds van deze WebView2-app gebruiken dezelfde virtuele oorsprong en profielmap, zolang die locaties niet worden gewijzigd.
+
+## Verder ontwikkelen
+
+- Oplossing testen op een echte Windows-machine.
+- Indien gewenst een icoon en installer toevoegen.
+- Later digitale codeondertekening onderzoeken, alleen als distributie buiten de familie relevant wordt.
