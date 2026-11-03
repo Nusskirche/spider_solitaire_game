@@ -1,0 +1,283 @@
+<!doctype html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Oma's Spider Solitaire</title><style>
+:root{font-family:Arial,Helvetica,sans-serif;color:#f7fbff;background:#103b62}*{box-sizing:border-box}body{margin:0;min-width:730px}button,select{font:inherit}button{cursor:pointer;border-radius:7px;border:1px solid #a8c5de;padding:9px 13px;background:linear-gradient(#fff,#d8e8f5);color:#173a57;font-weight:700}button:hover:not(:disabled){background:#fff}button:disabled{opacity:.48;cursor:default}button:focus-visible,.card:focus-visible{outline:3px solid #fbe170;outline-offset:2px}.shell{max-width:1500px;margin:auto;padding:13px 17px}.top{display:flex;justify-content:space-between;align-items:center;gap:14px}.title{font-family:Georgia,serif;font-size:clamp(24px,3vw,38px);font-weight:700;text-shadow:0 2px 2px #001a2d}.small{font-size:14px;color:#c7e2f1}.stats{display:flex;align-items:center;gap:22px;text-align:center}.stat strong{display:block;font-size:25px}.toolbar{display:flex;gap:9px;flex-wrap:wrap;margin:13px 0}.surface{border:2px solid #4f86a8;background:radial-gradient(ellipse at 50% 20%,#1f6696 0%,#0d406d 68%,#092e50 100%);box-shadow:inset 0 0 50px #061b3370,0 6px 25px #071d36;border-radius:15px;padding:15px;min-height:66vh}.tableau{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:clamp(3px,.85vw,13px);min-height:440px}.pile{position:relative;min-width:0;border-radius:5px;min-height:410px;outline:1px solid transparent}.pile.drop{background:#b9eecf2b;outline:2px solid #c8f4ce}.empty{position:absolute;top:0;left:0;width:100%;aspect-ratio: .70;border:2px dashed #75a5be99;border-radius:7px;background:#0e33575a}.card{position:absolute;left:0;width:100%;aspect-ratio:.70;background:#fff;border:1px solid #708da1;border-radius:6px;color:#182536;box-shadow:0 2px 3px #001e3788;user-select:none;touch-action:none;overflow:hidden;cursor:pointer}.card.red{color:#bb1932}.card.back{background:repeating-linear-gradient(45deg,#184d7f 0,#184d7f 6px,#2c77ad 6px,#2c77ad 10px);border:3px solid #f6f6e5;box-shadow:inset 0 0 0 2px #2b5e8e,0 2px 3px #092039}.card.back:after{content:'❖';display:flex;justify-content:center;align-items:center;height:100%;color:#f4d7a9;text-shadow:0 1px #21405b;font-size:clamp(13px,2.5vw,31px)}.face .corner{position:absolute;top:3px;left:5px;font-weight:800;font-size:clamp(12px,1.7vw,23px);line-height:.98}.face .corner span{display:block;text-align:center}.face .center{position:absolute;top:33%;left:0;right:0;text-align:center;font-size:clamp(20px,3.4vw,49px);opacity:.85}.card.selected{outline:3px solid #ffe05a;z-index:150!important}.card.hinted{outline:3px solid #bafbb5;z-index:140!important}.bottom{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-top:20px;min-height:110px}.finished{display:flex;gap:5px;flex-wrap:wrap;align-items:center}.badgecard{width:39px;height:54px;background:#f8f8f5;color:#161d22;border:1px solid #c4cbd3;border-radius:4px;text-align:center;padding:5px;font-size:22px;box-shadow:0 2px 4px #001f37}.stock{display:flex;gap:4px;align-items:center}.stockcard{width:48px;height:67px;border:3px solid #fff7df;border-radius:6px;background:repeating-linear-gradient(45deg,#164b7b 0,#164b7b 6px,#2d7eb5 6px,#2d7eb5 11px);box-shadow:0 2px 5px #001b34;display:grid;place-items:center;color:#ffda90;font-size:24px}.stock button{background:transparent;border:0;padding:0}.stock .depleted{border:2px dashed #75a5be;opacity:.4;background:none}.message{min-height:25px;text-align:center;color:#d9f7e1;font-size:15px;margin-top:8px}.foot{text-align:center;color:#bed7e8;font-size:12px;padding:12px}.overlay{position:fixed;inset:0;background:#051b30b8;display:none;align-items:center;justify-content:center;z-index:1000;padding:15px}.overlay.show{display:flex}.dialog{background:#f5f8fb;color:#18334a;max-width:495px;width:100%;padding:24px;border-radius:15px;box-shadow:0 15px 60px #001d30}.dialog h2{margin:0 0 13px;font:700 27px Georgia,serif}.dialog label{display:block;margin:14px 0 5px;font-weight:700}.dialog select{width:100%;padding:11px;border-radius:7px;border:1px solid #a3b8c7;background:white;color:#163349}.dialog .actions{display:flex;gap:8px;justify-content:end;margin-top:22px}.dialog p{line-height:1.55}.info{line-height:1.6}.sr{position:absolute;clip-path:inset(50%);width:1px;height:1px;overflow:hidden}@media(max-width:950px){.shell{padding:8px}.surface{padding:7px}.toolbar{gap:5px}.toolbar button{font-size:13px;padding:8px}.stats{gap:8px}.stat strong{font-size:20px}.tableau{gap:4px}.pile{min-height:400px}.stockcard{width:35px;height:50px}.bottom{margin-top:8px}}@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* Version 2: calm, classic table atmosphere */
+:root{--gold:#ffe5a1;--mint:#b5eac9}
+.surface{position:relative;overflow:hidden;background-image:radial-gradient(circle at 48% 4%,#2c719d 0%,#19557f 43%,#0b3d68 78%,#082f50 100%),repeating-linear-gradient(35deg,#ffffff08 0px,#ffffff08 1px,transparent 1px,transparent 5px);background-blend-mode:normal,soft-light}
+.surface:before{content:"";position:absolute;inset:9px;border:1px solid #d3d8a63d;border-radius:10px;pointer-events:none}
+.tableau,.bottom,.message{position:relative}
+.title{letter-spacing:.2px}
+.toolbar button{transition:background-color .16s ease,transform .16s ease,box-shadow .16s ease}
+.toolbar button:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 3px 10px #061a3066}
+.toolbar button:active:not(:disabled){transform:translateY(1px)}
+.card{transform-origin:center center;will-change:transform;transition:box-shadow .16s ease,filter .16s ease}
+.card.face:hover{box-shadow:0 4px 9px #001d389c;filter:brightness(1.03)}
+.card.selected{outline:3px solid #ffe68b;box-shadow:0 0 0 3px #b1741280,0 5px 18px #031d30bd}
+.card.hinted{outline:3px solid #bcf4ac;filter:brightness(1.09)}
+.pile.can-drop{background:#7ce6a012;outline:2px dashed #badfa7b5;outline-offset:1px}
+.pile.can-drop .empty{border-color:#d7efaa}
+.pile.can-drop:after{content:"";position:absolute;bottom:0;left:15%;width:70%;height:2px;background:#cbf0b3;box-shadow:0 0 11px #d4ffbd;pointer-events:none;border-radius:8px}
+.stockcard{transition:transform .16s ease,box-shadow .16s ease}
+.stock button:hover:not(:disabled){transform:translateY(-4px) rotate(-2deg);filter:brightness(1.15)}
+.badgecard{transition:transform .25s ease}
+.badgecard.newly-finished{animation:foundationPulse .75s cubic-bezier(.16,1,.3,1)}
+.message{background:#052b4c88;border-radius:9px;max-width:680px;margin:14px auto 0;min-height:36px;padding:8px 12px;line-height:1.25}
+.message.pop{animation:toastAppear .3s ease-out}
+.settings-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:14px 0;padding:10px 12px;border:1px solid #d5e2eb;border-radius:9px;background:#f9fcff}
+.settings-row label{margin:0!important}
+.settings-row select{width:170px!important}
+.settings-note{font-size:13px;color:#526878}
+#confetti{position:fixed;inset:0;z-index:1050;pointer-events:none;overflow:hidden}
+.confetti-piece{position:absolute;top:-35px;left:var(--x);font:700 var(--sz) Georgia,serif;color:var(--clr);text-shadow:0 2px 4px #10213740;animation:confettiFall var(--dur) linear forwards;animation-delay:var(--delay);opacity:0;will-change:transform}
+.sparkle{position:fixed;pointer-events:none;z-index:1100;color:#ffdfa4;font-size:23px;text-shadow:0 0 12px #ffe19b;animation:sparkleRise .9s ease-out forwards}
+.run-flyer{position:fixed;pointer-events:none;z-index:1200;filter:drop-shadow(0 8px 18px #001a2e7d)}
+.run-flyer .mini{position:absolute;inset:0;border-radius:7px;border:1px solid #9aaebb;background:linear-gradient(180deg,#ffffff,#edf2f6);overflow:hidden}
+.run-flyer .mini:before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,#ffffff8a,transparent 35%,transparent 70%,#dce8f080)}
+.run-flyer .mini .stamp{position:absolute;inset:auto 8px 8px auto;font:700 22px Georgia,serif;color:#305979;opacity:.82}
+.run-flyer .mini.r2{transform:translate(0,-9%) rotate(-4deg)}
+.run-flyer .mini.r3{transform:translate(0,-18%) rotate(4deg)}
+.run-flyer .mini.r4{transform:translate(0,-27%) rotate(-2deg)}
+.run-flyer .mini .corner{position:absolute;left:8px;top:6px;font:700 18px Georgia,serif;color:#20384f;line-height:1}
+.run-flyer.red .mini .corner,.run-flyer.red .mini .stamp{color:#b22a39}
+#notice .dialog.win{border:3px solid #dec17a;box-shadow:0 15px 60px #001d30,0 0 50px #f1d48055}
+.dialog .subtle{color:#527087;font-size:14px}
+.clock-warning{color:#ffe29e!important;animation:clockAttention 1.7s ease-in-out infinite}
+.timer-label{font-size:13px;color:#d0e2f0}
+@keyframes cardReveal{0%{transform:scaleX(.08) rotateY(-88deg);filter:brightness(1.4)}65%{transform:scaleX(1.08) rotateY(0)}100%{transform:scaleX(1) rotateY(0);filter:brightness(1)}}
+.card.flip-reveal{animation:cardReveal .45s ease-out}
+@keyframes foundationPulse{0%{transform:scale(.7);filter:brightness(1.5)}65%{transform:scale(1.24)}100%{transform:scale(1)}}
+@keyframes toastAppear{from{opacity:.2;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+@keyframes confettiFall{0%{opacity:0;transform:translate3d(0,-5vh,0) rotate(0)}8%{opacity:.95}88%{opacity:.9}100%{opacity:0;transform:translate3d(var(--drift),106vh,0) rotate(var(--spin))}}
+@keyframes sparkleRise{0%{transform:translateY(0) scale(.5);opacity:0}40%{opacity:1}100%{transform:translateY(-75px) scale(1.7);opacity:0}}
+@keyframes clockAttention{50%{text-shadow:0 0 14px #ffe6a780}}
+@media(prefers-reduced-motion:reduce){.card,.stockcard,.toolbar button{will-change:auto}.confetti-piece,.sparkle{display:none}}
+
+/* Version 3.2: hints only when requested, and a leisurely flying foundation */
+.card.selected.hint-from{outline:3px solid #7ce5ff!important;box-shadow:0 0 0 4px #0e699eb0,0 0 15px 7px #75dcff82!important;filter:brightness(1.08)}
+.card.hint-to{outline:4px solid #ffdf7d!important;box-shadow:0 0 0 5px #cc8b23b5,0 0 18px 7px #ffe3a485!important;filter:brightness(1.1)}
+.empty.hint-to{border:4px solid #ffe07c!important;background:#d1a73844!important;box-shadow:0 0 18px #ffd87d9a,inset 0 0 20px #ffe7aa65!important}
+.hint-arrow{position:fixed;inset:0;pointer-events:none;z-index:450;overflow:hidden}
+.hint-arrow svg{width:100%;height:100%;display:block;overflow:visible}
+.hint-arrow path.route{stroke:#fff0aa;stroke-width:5;stroke-linecap:round;stroke-dasharray:10 12;fill:none;filter:drop-shadow(0 1px 3px #052741);animation:hintDashes 1.3s linear infinite}
+.hint-arrow path.route-under{stroke:#184869;stroke-width:9;stroke-linecap:round;fill:none;opacity:.85}
+.hint-label{position:fixed;z-index:460;font-size:13px;font-weight:800;border-radius:20px;padding:6px 11px;color:#102f43;white-space:nowrap;box-shadow:0 4px 12px #001c39a8;border:2px solid #fff6d9;pointer-events:none}
+.hint-label.from{background:#9be9ff}.hint-label.to{background:#ffe7a2}
+@keyframes hintDashes{to{stroke-dashoffset:-44}}
+.badgecard.awaiting-flight{color:transparent!important;background:#153d61;border:2px dashed #8fb2c6;box-shadow:inset 0 0 8px #072c4f}
+@media(prefers-reduced-motion:reduce){.hint-arrow path.route{animation:none}}
+
+/* Version 3: classic welcome, quiet records, dignified results */
+.pile.can-drop,.pile.drop{background:transparent!important;outline:1px solid transparent!important}
+.pile.can-drop:after{display:none!important}.pile.can-drop .empty{border-color:#75a5be99!important}
+.home-dialog{max-width:510px;padding:0;overflow:hidden;border:2px solid #d8c390;background:#f8fafb;box-shadow:0 20px 70px #001a35b8}
+.home-hero{text-align:center;background:linear-gradient(145deg,#0b3357,#185b81);padding:27px 28px 22px;color:white}
+.home-kicker,.dialog-kicker{letter-spacing:1.4px;font-size:11px;font-weight:800;color:#c7dfb7}
+.home-hero h2{color:#fff;font-size:35px;margin:2px 0 7px;text-shadow:0 2px 3px #09263b}
+.home-hero p{font-size:14px;color:#e2f0fb;max-width:330px;margin:0 auto;line-height:1.5}
+.home-art{height:122px;position:relative;width:190px;margin:9px auto 3px}
+.artcard{position:absolute;left:65px;top:13px;width:68px;height:96px;border:3px solid white;border-radius:7px;box-shadow:0 7px 13px #001b36bb;background:linear-gradient(160deg,#fff,#e8ebee);color:#19374f;font:700 21px Georgia,serif;text-align:left;padding:4px 7px;transform-origin:bottom center}
+.artcard span{display:block;text-align:center;font-size:41px;margin-top:1px}.artcard.a1{transform:translateX(-49px) rotate(-18deg)}.artcard.a2{transform:translateX(49px) rotate(18deg);color:#b32031}.artcard.a3{transform:translateY(-8px)}
+.home-actions{padding:22px 26px 7px;display:grid;gap:10px}.home-actions button{font-size:17px;padding:13px;min-height:49px}
+button.primary-action{background:linear-gradient(#ffedb5,#e4c471);border-color:#b8994d;color:#3a321f}
+button.primary-action:hover:not(:disabled){background:linear-gradient(#fff5d6,#f6d488)}
+.home-detail{text-align:center;color:#466278;font-size:13px;min-height:17px;margin:5px 24px 10px!important}
+.home-bottom{text-align:center;color:#5b7587;font-size:12px;padding:12px 10px 17px;border-top:1px solid #dfebf2;margin-top:5px}
+.dialog-heading{display:flex;align-items:center;justify-content:space-between}.decor-suit{font-size:39px;color:#b1cbdf}
+.statistics-dialog{max-width:630px}.statistics-dialog h2{margin-bottom:3px}.statistics-dialog .dialog-kicker{color:#3e769c;margin-bottom:4px}
+.stat-description{font-size:14px;color:#4d6578;margin:9px 0 17px}
+.stat-tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.stat-tiles>div{background:#e7f0f6;border:1px solid #d1e1ea;border-radius:8px;padding:12px;text-align:center}
+.stat-tiles span,.result-figures span{display:block;font-size:12px;color:#557084}.stat-tiles strong{display:block;font-size:29px;margin-top:3px;color:#143b58}
+.section-label{font-size:16px;color:#213d52;margin:21px 0 9px}
+.records-table{border-collapse:collapse;width:100%;font-size:14px;color:#17374c}
+.records-table th{background:#dbe9f2;font-weight:700}.records-table td,.records-table th{padding:12px 9px;text-align:left;border-bottom:1px solid #dce5ec}
+.records-table td:not(:first-child),.records-table th:not(:first-child){text-align:center}
+.stat-footnote{color:#657f8f;font-size:12px;margin:13px 0 0!important}
+.stat-actions{justify-content:space-between!important}.quiet{border-color:#e3e7ea;background:#f8fafb;font-size:13px;color:#546c80}
+.result-dialog{text-align:center;max-width:530px;padding:27px 27px 25px;box-shadow:0 20px 75px #0007;border:2px solid #d4bb77}
+.result-emblem{font:700 51px Georgia,serif;margin:0 auto 10px;display:grid;place-items:center;width:83px;height:83px;border-radius:50%;background:#e4eefa;color:#235878;border:3px solid #d8bb75}
+.result-dialog.victory .result-emblem{background:#fff3d2;color:#b58825;box-shadow:0 0 0 8px #fcf4e6}
+.result-dialog .dialog-kicker{color:#8a713e;margin:13px 0 6px}.result-dialog h2{font-size:33px;margin:4px 0 10px}
+.result-lead{color:#526b7b;margin:0 auto 17px;line-height:1.55;max-width:390px}
+.result-figures{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:16px 0}
+.result-figures>div{background:#edf3f8;border-radius:9px;padding:11px 7px}.result-figures strong{font-size:22px;color:#173f5c;display:block;margin-top:4px}
+.record-ribbon{background:#fff4d2;border:1px solid #e8c97a;color:#795915;border-radius:8px;font-weight:700;padding:11px;margin:10px 0 16px}
+.result-actions{display:flex;flex-wrap:wrap;justify-content:center!important;margin-top:19px!important}.result-actions button{flex:1 1 133px}
+@media(max-height:710px){.home-hero{padding:13px 20px}.home-art{height:95px;transform:scale(.75);margin:0 auto}.home-actions{padding:12px 20px 4px;gap:7px}.home-actions button{min-height:40px;padding:8px}.result-dialog{padding:15px}}
+</style></head><body><main class="shell"><div class="top"><div><div class="title">♠ Spider Solitaire</div><div class="small">Een vertrouwd kaartspel, helemaal offline</div></div><div class="stats"><div class="stat"><span class="timer-label" id="clockLabel">Tijd</span><strong id="clock">10:00</strong></div><div class="stat"><span class="small">Zetten</span><strong id="moves">0</strong></div><div class="stat"><span class="small">Reeksen</span><strong id="progress">0 / 8</strong></div></div></div><div class="toolbar"><button id="homeButton">⌂ Start</button><button id="new">Nieuw spel</button><button id="undo">↶ Ongedaan maken</button><button id="hint">💡 Hint</button><button id="pause">Ⅱ Pauze</button><button id="statsButton">★ Statistieken</button><button id="settingsButton">⚙ Instellingen</button><button id="rules">? Spelregels</button><button id="fullscreen">⛶ Volledig scherm</button></div><section class="surface" aria-label="Spider Solitaire speeltafel"><div class="tableau" id="tableau"></div><div class="bottom"><div><div class="small" style="margin-bottom:6px">Voltooide reeksen</div><div class="finished" id="finished"></div></div><div><div class="small" style="margin-bottom:7px;text-align:right">Nieuwe kaarten (<span id="rounds">5</span> keer)</div><div class="stock" id="stock"></div></div></div><div class="message" id="message" role="status"></div></section><div class="foot">Klik op een kaart en daarna op een kolom, of sleep met de muis. De voortgang wordt vanzelf opgeslagen. · Versie 3.2</div></main>
+
+<div class="overlay" id="home"><div class="dialog home-dialog" role="dialog" aria-labelledby="homeTitle" aria-modal="true">
+  <div class="home-hero"><div class="home-kicker">EEN RUSTIG MOMENTJE VOOR JEZELF</div><div class="home-art" aria-hidden="true"><span class="artcard a1">A<span>♠</span></span><span class="artcard a2">K<span>♥</span></span><span class="artcard a3">Q<span>♠</span></span></div>
+  <h2 id="homeTitle">Spider Solitaire</h2><p>Welkom terug! Een vertrouwd kaartspel, gewoon op je eigen computer.</p></div>
+  <div class="home-actions"><button class="primary-action" id="homeContinue">▶ Verder spelen</button><button id="homeNew">♠ Nieuw spel</button><button id="homeStats">★ Mijn statistieken</button></div>
+  <p class="home-detail" id="homeDetail"></p><div class="home-bottom">Geen internet nodig <span aria-hidden="true">·</span> Je spel wordt vanzelf bewaard</div>
+</div></div>
+<div class="overlay" id="statistics"><div class="dialog statistics-dialog" role="dialog" aria-modal="true" aria-labelledby="statsTitle">
+ <div class="dialog-heading"><div><div class="dialog-kicker">JOUW SPEELPLEZIER</div><h2 id="statsTitle">Mijn statistieken</h2></div><span class="decor-suit" aria-hidden="true">♠</span></div>
+ <p class="stat-description">Vanaf versie 3 worden gespeelde partijen op deze computer bijgehouden. Ook een partij zonder tijdslimiet telt mee.</p>
+ <div class="stat-tiles"><div><span>Gestart</span><strong id="totalStarted">0</strong></div><div><span>Gewonnen</span><strong id="totalWins">0</strong></div><div><span>Tijd voorbij</span><strong id="totalTimeouts">0</strong></div></div>
+ <h3 class="section-label">Beste tijden per moeilijkheid</h3>
+ <table class="records-table"><thead><tr><th>Niveau</th><th>Met klok</th><th>Zonder klok</th></tr></thead><tbody id="recordRows"></tbody></table>
+ <p id="statFootnote" class="stat-footnote"></p>
+ <div class="actions stat-actions"><button class="quiet" id="clearStats">Statistieken wissen</button><button id="closeStats">Terug</button></div>
+</div></div>
+<div class="overlay" id="result"><div class="dialog result-dialog" role="dialog" aria-modal="true" aria-labelledby="resultTitle">
+ <div class="result-emblem" id="resultEmblem" aria-hidden="true">♠</div><div id="resultEyebrow" class="dialog-kicker">PARTIJ AFGEROND</div><h2 id="resultTitle">Gewonnen!</h2><p id="resultLead" class="result-lead"></p>
+ <div class="result-figures"><div><span>Speeltijd</span><strong id="resultTime">00:00</strong></div><div><span>Zetten</span><strong id="resultMoves">0</strong></div><div><span>Reeksen</span><strong id="resultRuns">8 / 8</strong></div></div>
+ <div class="record-ribbon" id="recordRibbon">★ Een nieuw persoonlijk record!</div>
+ <div class="actions result-actions"><button id="resultStats">★ Statistieken</button><button id="resultClose">Speeltafel bekijken</button><button class="primary-action" id="resultNew">Nog een spel</button></div>
+</div></div>
+<div class="overlay" id="setup"><div class="dialog"><h2>Nieuw spel</h2><p>Kies hoe je wilt spelen.</p><label for="difficulty">Moeilijkheid</label><select id="difficulty"><option value="1">Makkelijk — 1 kaartsoort (schoppen)</option><option value="2">Gemiddeld — 2 kaartsoorten</option><option value="4">Moeilijk — 4 kaartsoorten</option></select><label for="timemode">Speeltijd</label><select id="timemode"><option value="timed">Met tijdslimiet</option><option value="free">Rustig spelen zonder tijdslimiet</option></select><p class="small" style="color:#455c6d">Met klok: 10 minuten (makkelijk), 12 minuten (gemiddeld) of 15 minuten (moeilijk). Je kunt op pauze drukken.</p><div class="actions"><button id="cancelsetup">Annuleren</button><button id="start">Spelen</button></div></div></div>
+<div id="hintArrow" class="hint-arrow" aria-hidden="true" hidden></div><div class="overlay" id="settings"><div class="dialog"><h2>Instellingen</h2><p>Maak het spel precies zoals jij het prettig vindt.</p><div class="settings-row"><label for="soundSetting">Geluid</label><select id="soundSetting"><option value="on">Aan (zacht)</option><option value="off">Uit</option></select></div><div class="settings-row"><label for="animationSetting">Kaartanimaties</label><select id="animationSetting"><option value="on">Aan</option><option value="off">Uit</option></select></div><p class="settings-note">Alle geluiden worden lokaal gemaakt. Er zijn geen downloads nodig. De instellingen worden onthouden.</p><div class="actions"><button id="settingsCancel">Annuleren</button><button id="settingsSave">Opslaan</button></div></div></div><div id="confetti" aria-hidden="true"></div>
+<div class="overlay" id="notice"><div class="dialog"><h2 id="noticeTitle"></h2><div id="noticeBody" class="info"></div><div class="actions"><button id="noticeNew" style="display:none">Nieuw spel</button><button id="noticeOk">Verder</button></div></div></div>
+<script>
+(()=>{'use strict';
+const KEY='oma-spider-v1';const OPTIONS_KEY='oma-spider-options-v2';const STATS_KEY='oma-spider-stats-v3';const $=id=>document.getElementById(id);const SUITS=['♠','♥','♣','♦'];let game=null,selection=null,hint=null,paused=false,ended=false,undoStack=[],elapsed=0,lastTick=Date.now(),drag=null;
+let lastSavedSecond=-1,minuteAlerted=false,audioCtx=null,pendingWin=false,statsReturn=null,latestRecord=false;
+const RUN_FLIGHT_MS=1750;let activeFlyers=new Set();
+let options={sound:true,animation:true};
+try{const o=JSON.parse(localStorage.getItem(OPTIONS_KEY)||'{}');if(typeof o.sound==='boolean')options.sound=o.sound;if(typeof o.animation==='boolean')options.animation=o.animation}catch(e){}
+
+function loadStats(){try{const obj=JSON.parse(localStorage.getItem(STATS_KEY)||'null');if(obj&&obj.version===3&&typeof obj.started==='number'&&obj.records&&typeof obj.records==='object')return obj}catch(e){}return{version:3,started:0,wins:0,timeouts:0,records:{}}}
+let stats=loadStats();
+function saveStats(){try{localStorage.setItem(STATS_KEY,JSON.stringify(stats))}catch(e){tell('Let op: de statistieken konden niet worden opgeslagen.')}}
+function statKey(g){return String(g.difficulty)+'-'+g.mode}
+function statGroup(g){const k=statKey(g);if(!stats.records[k])stats.records[k]={started:0,wins:0,timeouts:0,best:null};return stats.records[k]}
+function trackStart(){if(!game||game.statsTracked)return;game.statsTracked=true;game.outcomeRecorded=false;stats.started++;statGroup(game).started++;saveStats()}
+function recordOutcome(which){if(!game||game.outcomeRecorded)return false;trackStart();game.outcomeRecorded=true;let r=statGroup(game),record=false;
+ if(which==='win'){stats.wins++;r.wins++;if(r.best===null||elapsed<r.best){r.best=elapsed;record=true}}
+ if(which==='timeout'){stats.timeouts++;r.timeouts++}
+ saveStats();return record;
+}
+function openHome(){if($('setup').classList.contains('show'))$('setup').classList.remove('show');if($('notice').classList.contains('show'))$('notice').classList.remove('show');
+ const canResume=!!game&&!ended;$('homeContinue').style.display=canResume?'':'none';
+ $('homeDetail').textContent=canResume?'Er staat nog een spel klaar. Ga gerust verder waar je gebleven was.':(game&&ended?'Je vorige partij is afgelopen. Begin wanneer je wilt opnieuw.':'Kies Nieuw spel om te beginnen.');
+ $('home').classList.add('show');lastTick=Date.now();
+}
+function closeHome(){$('home').classList.remove('show');lastTick=Date.now()}
+function openStatistics(from){statsReturn=from||($('home').classList.contains('show')?'home':null);if(statsReturn==='home')$('home').classList.remove('show');if(statsReturn==='result')$('result').classList.remove('show');
+ $('totalStarted').textContent=stats.started;$('totalWins').textContent=stats.wins;$('totalTimeouts').textContent=stats.timeouts;
+ const rows=$('recordRows');rows.replaceChildren();for(const diff of [1,2,4]){const tr=document.createElement('tr');const difficultyName={1:'Makkelijk',2:'Gemiddeld',4:'Moeilijk'}[diff];const vals=[difficultyName,...['timed','free'].map(m=>{let x=stats.records[diff+'-'+m];return x&&x.best!==null?format(x.best):'—'})];for(const val of vals){let td=document.createElement('td');td.textContent=val;tr.append(td)}rows.append(tr)}
+ $('statFootnote').textContent='Beste tijd is de snelste gewonnen partij per moeilijkheid en spelmodus. Alleen resultaten op deze computer tellen mee.';
+ $('statistics').classList.add('show');lastTick=Date.now();
+}
+function closeStatistics(){$('statistics').classList.remove('show');if(statsReturn==='home')openHome();else if(statsReturn==='result')$('result').classList.add('show');statsReturn=null;lastTick=Date.now()}
+function showResult(outcome){if(!game)return;const victory=outcome==='win';const winTitle=victory?'Geweldig gespeeld!':'De tijd is om';
+ $('result').querySelector('.dialog').classList.toggle('victory',victory);
+ $('resultTitle').textContent=winTitle;$('resultEyebrow').textContent=victory?'ALLE ACHT REEKSEN VOLTOOID':'DEZE PARTIJ IS AFGELOPEN';
+ $('resultEmblem').textContent=victory?'★':'⌛';$('resultLead').textContent=victory?'Alle kaarten zijn opgeruimd. Geniet van je overwinning!':'Helaas, de klok is afgelopen. Je kunt altijd een nieuwe partij proberen.';
+ $('resultTime').textContent=format(elapsed);$('resultMoves').textContent=game.moves;$('resultRuns').textContent=game.complete.length+' / 8';
+ $('recordRibbon').style.display=victory&&latestRecord?'':'none';$('result').classList.add('show');lastTick=Date.now();
+}
+function modalOpen(){return ['home','setup','settings','statistics','result','notice'].some(id=>$(id).classList.contains('show'))}
+
+function motionEnabled(){return options.animation&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches}
+function sound(type){
+ if(!options.sound||document.hidden)return;
+ try{
+   const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
+   if(!audioCtx)audioCtx=new AC();
+   if(audioCtx.state==='suspended')audioCtx.resume().catch(()=>{});
+   const tunes={select:[[460,0,.045]],move:[[350,0,.065],[490,.066,.09]],flip:[[550,0,.095]],deal:[[280,0,.08],[350,.085,.08],[440,.17,.1]],undo:[[440,0,.07],[330,.07,.09]],hint:[[570,0,.07],[710,.095,.13]],complete:[[480,0,.1],[600,.12,.1],[800,.25,.2]],win:[[480,0,.18],[600,.18,.18],[720,.36,.18],[960,.54,.4]],error:[[180,0,.11]],time:[[310,0,.18],[250,.21,.25]],warning:[[640,0,.08],[570,.12,.08]],pause:[[380,0,.07]]};
+   const notes=tunes[type]||tunes.select,now=audioCtx.currentTime;
+   for(const [freq,delay,dur] of notes){let oscillator=audioCtx.createOscillator(),gain=audioCtx.createGain();oscillator.type=type==='error'||type==='time'?'sine':'triangle';oscillator.frequency.setValueAtTime(freq,now+delay);gain.gain.setValueAtTime(.0001,now+delay);gain.gain.exponentialRampToValueAtTime(type==='win'?.037:.025,now+delay+.012);gain.gain.exponentialRampToValueAtTime(.0001,now+delay+dur);oscillator.connect(gain);gain.connect(audioCtx.destination);oscillator.start(now+delay);oscillator.stop(now+delay+dur+.02)}
+ }catch(e){/* Audio remains optional on restricted browsers. */}
+}
+function toastPulse(){const e=$('message');e.classList.remove('pop');if(motionEnabled()){void e.offsetWidth;e.classList.add('pop')}}
+function clearHintArrow(){const layer=$('hintArrow');layer.replaceChildren();layer.hidden=true}
+function drawHintArrow(){
+ const layer=$('hintArrow');clearHintArrow();
+ if(!hint||!game||ended||paused)return;
+ const src=$(`tableau`).querySelector(`.pile[data-col="${hint.i}"] .card[data-index="${hint.j}"]`);
+ const destPile=$(`tableau`).querySelector(`.pile[data-col="${hint.k}"]`);
+ if(!src||!destPile)return;
+ const to=destPile.querySelector('.card:last-child')||destPile.querySelector('.empty');
+ if(!to)return;
+ const start=src.getBoundingClientRect(),end=to.getBoundingClientRect();
+ const sx=start.left+start.width/2,sy=start.top+Math.min(start.height*.53,48);
+ const ex=end.left+end.width/2,ey=end.top+Math.min(end.height*.5,48);
+ const direction=ex>sx?1:-1;const arch=Math.min(sy,ey)-Math.min(80,Math.abs(ex-sx)*.17+30);
+ const d=`M ${sx} ${sy} C ${sx+direction*52} ${arch}, ${ex-direction*52} ${arch}, ${ex} ${ey}`;
+ const ns='http://www.w3.org/2000/svg';const svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox',`0 0 ${window.innerWidth} ${window.innerHeight}`);
+ const defs=document.createElementNS(ns,'defs');const marker=document.createElementNS(ns,'marker');marker.id='oma-hint-arrowhead';marker.setAttribute('viewBox','0 0 10 10');marker.setAttribute('refX','8');marker.setAttribute('refY','5');marker.setAttribute('markerWidth','4');marker.setAttribute('markerHeight','4');marker.setAttribute('orient','auto-start-reverse');const head=document.createElementNS(ns,'path');head.setAttribute('d','M 1 1 L 9 5 L 1 9 z');head.setAttribute('fill','#fff0aa');marker.append(head);defs.append(marker);svg.append(defs);
+ for(const cls of ['route-under','route']){const path=document.createElementNS(ns,'path');path.setAttribute('class',cls);path.setAttribute('d',d);if(cls==='route')path.setAttribute('marker-end','url(#oma-hint-arrowhead)');svg.append(path)}
+ layer.append(svg);
+ for(const [cls,box,label] of [['from',start,'1  PAK'],['to',end,'2  HIER']]){
+  const el=document.createElement('div');el.className='hint-label '+cls;el.textContent=label;
+  el.style.left=Math.max(6,Math.min(window.innerWidth-95,box.left+box.width/2-43))+'px';
+  el.style.top=Math.max(6,Math.min(window.innerHeight-32,box.top<190?box.top+Math.min(79,box.height*.6):box.top-35))+'px';
+  layer.append(el);
+ }
+ layer.hidden=false;
+}
+function cancelRunAnimations(){for(const node of activeFlyers){node.getAnimations().forEach(a=>a.cancel());node.remove()}activeFlyers.clear()}
+function readPositions(){let out=new Map();if(!motionEnabled())return out;document.querySelectorAll('#tableau .card[data-id]').forEach(el=>{const b=el.getBoundingClientRect();out.set(el.dataset.id,{x:b.left,y:b.top,up:!el.classList.contains('back')})});return out}
+function animateCompletedRuns(before,completedRuns){if(!motionEnabled()||!completedRuns||!completedRuns.length)return;const firstPile=document.querySelector('#tableau .pile');if(!firstPile)return;const pileBox=firstPile.getBoundingClientRect();const baseWidth=Math.max(44,Math.min(110,pileBox.width));const baseHeight=Math.round(baseWidth/0.70);completedRuns.forEach((run,runIndex)=>{setTimeout(()=>{const pts=run.ids.map(id=>before.get(String(id))).filter(Boolean);const target=$('finished').children[run.targetIndex];if(!pts.length||!target)return;const minX=Math.min(...pts.map(p=>p.x));const minY=Math.min(...pts.map(p=>p.y));const suit=SUITS[run.suit];const flyer=document.createElement('div');flyer.className='run-flyer'+(run.suit%2?' red':'');flyer.style.left=minX+'px';flyer.style.top=minY+'px';flyer.style.width=baseWidth+'px';flyer.style.height=baseHeight+'px';flyer.innerHTML=`<div class="mini r4"><span class="corner">K</span><span class="stamp">${suit}</span></div><div class="mini r3"><span class="corner">Q</span><span class="stamp">${suit}</span></div><div class="mini r2"><span class="corner">J</span><span class="stamp">${suit}</span></div><div class="mini"><span class="corner">A</span><span class="stamp">${suit}</span></div>`;document.body.append(flyer);activeFlyers.add(flyer);const tb=target.getBoundingClientRect();const endScale=Math.max(.55,Math.min(.82,tb.width/baseWidth));const endX=tb.left+(tb.width-baseWidth*endScale)/2-minX;const endY=tb.top+(tb.height-baseHeight*endScale)/2-minY;const anim=flyer.animate([{transform:'translate(0,0) scale(1) rotate(0deg)',opacity:1,offset:0},{transform:'translate(0,-12px) scale(1.03) rotate(-2deg)',opacity:1,offset:.18},{transform:`translate(${endX}px, ${endY}px) scale(${endScale}) rotate(4deg)`,opacity:.96,offset:.84},{transform:`translate(${endX}px, ${endY}px) scale(${endScale*.84}) rotate(0deg)`,opacity:.18,offset:1}],{duration:RUN_FLIGHT_MS,delay:runIndex*80,easing:'cubic-bezier(.40,.05,.60,.95)',fill:'forwards'});anim.onfinish=()=>{activeFlyers.delete(flyer);flyer.remove();if(target&&target.isConnected){target.classList.remove('awaiting-flight');if(motionEnabled())target.animate([{transform:'scale(.78)',filter:'brightness(1.3)'},{transform:'scale(1.16)',filter:'brightness(1.15)'},{transform:'scale(1)',filter:'brightness(1)'}],{duration:420,easing:'cubic-bezier(.2,.8,.2,1)'});}};},runIndex*90)})}
+function playCardMotion(before,kind,completedRuns){if(!motionEnabled())return;const source=$('stock').getBoundingClientRect();document.querySelectorAll('#tableau .card[data-id]').forEach(el=>{
+ const prior=before.get(el.dataset.id),box=el.getBoundingClientRect();
+ if(prior){let dx=prior.x-box.left,dy=prior.y-box.top;
+  if(Math.abs(dx)+Math.abs(dy)>4&&Math.abs(dx)<1800&&Math.abs(dy)<1800){
+   const a=el.animate([{transform:`translate(${dx}px, ${dy}px)`,filter:'brightness(1.1)'},{transform:'translate(0,0)',filter:'brightness(1)'}],{duration:kind==='undo'?380:460,easing:'cubic-bezier(.2,.8,.15,1)'});
+   a.addEventListener('finish',()=>{}, {once:true});
+  }else if(!prior.up&&el.classList.contains('face'))el.classList.add('flip-reveal');
+ }else if(kind==='deal'){
+  const dx=source.left-box.left,dy=source.top-box.top;
+  el.animate([{transform:`translate(${dx}px, ${dy}px) scale(.68)`,opacity:.65},{transform:'translate(0,0) scale(1)',opacity:1}],{duration:480,delay:Math.max(0,Number(el.dataset.col))*32,easing:'cubic-bezier(.17,.75,.22,1)',fill:'both'});
+ }
+});if(completedRuns&&completedRuns.length)animateCompletedRuns(before,completedRuns)}
+function celebration(all=false){if(!motionEnabled())return;
+ const root=$('confetti');root.replaceChildren();
+ const count=all?65:13,palette=['#f4c35e','#fff6c2','#89d2ed','#bce5b2','#f59b8d'];
+ for(let i=0;i<count;i++){let p=document.createElement('span');p.className='confetti-piece';p.textContent=all?['♠','♥','♦','♣','✦'][i%5]:'✦';p.style.setProperty('--x',(8+Math.random()*84)+'%');p.style.setProperty('--sz',(all?13:10)+Math.random()*11+'px');p.style.setProperty('--clr',palette[i%palette.length]);p.style.setProperty('--dur',(all?2.4:1.4)+Math.random()*.8+'s');p.style.setProperty('--delay',(Math.random()*(all?.45:.2))+'s');p.style.setProperty('--drift',(Math.random()*230-115)+'px');p.style.setProperty('--spin',(Math.random()*1080-540)+'deg');root.append(p)}
+ setTimeout(()=>{if(root.isConnected)root.replaceChildren()},all?3800:2400);
+}
+function openSettings(){$('soundSetting').value=options.sound?'on':'off';$('animationSetting').value=options.animation?'on':'off';$('settings').classList.add('show')}
+const baseTime={1:600,2:720,4:900};const clone=x=>JSON.parse(JSON.stringify(x));
+function tell(s){if($('message').textContent!==s){$('message').textContent=s;toastPulse()}}
+function persist(){if(!game)return;try{localStorage.setItem(KEY,JSON.stringify({game,undoStack:undoStack.slice(-80),elapsed,paused,ended}))}catch(e){tell('Opslaan lukt niet; controleer of de browser lokale gegevens toestaat.')}}
+function restore(){try{const x=JSON.parse(localStorage.getItem(KEY));if(!x||!x.game||!Array.isArray(x.game.cols)||x.game.cols.length!==10||!Array.isArray(x.game.stock))return false;game=x.game;undoStack=Array.isArray(x.undoStack)?x.undoStack.slice(-80):[];elapsed=Number(x.elapsed)||0;paused=!!x.paused;ended=!!x.ended;if(!game.statsTracked&&!ended){trackStart();persist()}return true}catch(e){return false}}
+function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function makeGame(difficulty,mode){let suits=difficulty===1?[0]:difficulty===2?[0,1]:[0,1,2,3];let cards=[];let id=0;for(let n=0;n<8/difficulty;n++)for(let s of suits)for(let r=1;r<=13;r++)cards.push({id:id++,s,r,up:false});shuffle(cards);let cols=Array.from({length:10},()=>[]);for(let row=0;row<6;row++)for(let col=0;col<10;col++){if(row===5&&col>=4)continue;let c=cards.pop();c.up=(row===5||(row===4&&col>=4));cols[col].push(c)}let stock=[];for(let round=0;round<5;round++){stock.push(cards.splice(0,10))}return{difficulty,mode,cols,stock,complete:[],moves:0}}
+function begin(){cancelRunAnimations();clearHintArrow();const d=Number($('difficulty').value),m=$('timemode').value;game=makeGame(d,m);elapsed=0;undoStack=[];selection=hint=null;paused=ended=false;minuteAlerted=false;lastSavedSecond=-1;pendingWin=false;latestRecord=false;trackStart();$('setup').classList.remove('show');tell('Veel speelplezier!');sound('select');persist();render()}
+function history(){undoStack.push({game:clone(game),elapsed});if(undoStack.length>80)undoStack.shift()}
+function canTake(col,index){let cards=game.cols[col];if(index<0||index>=cards.length||!cards[index].up)return false;for(let i=index;i<cards.length-1;i++)if(!cards[i+1].up||cards[i].s!==cards[i+1].s||cards[i].r!==cards[i+1].r+1)return false;return true}
+function canPlace(src,index,dst){if(src===dst||!canTake(src,index))return false;let source=game.cols[src][index],target=game.cols[dst];return !target.length||target[target.length-1].r===source.r+1}
+function tidy(){let removed=0,flipped=0,completedRuns=[];for(let colIndex=0;colIndex<game.cols.length;colIndex++){let col=game.cols[colIndex];
+ // Check repeatedly so stacked complete runs are collected correctly.
+ let again=true;while(again){again=false;if(col.length>=13){let a=col.slice(-13);if(a[0].r===13&&a.every((c,i)=>c.up&&c.s===a[0].s&&c.r===13-i)){game.complete.push(a[0].s);completedRuns.push({suit:a[0].s,ids:a.map(c=>c.id),targetIndex:game.complete.length-1,sourceCol:colIndex});col.splice(-13);removed++;again=true}}}
+ if(col.length&&!col[col.length-1].up){col[col.length-1].up=true;flipped++}
+ }
+ if(game.complete.length===8){ended=true;pendingWin=true;latestRecord=recordOutcome('win');tell('Geweldig! Alle acht reeksen zijn compleet!')}
+ return{removed,flipped,completedRuns}
+}
+function move(src,index,dst){if(paused||ended||!canPlace(src,index,dst))return false;history();let taken=game.cols[src].splice(index);game.cols[dst].push(...taken);game.moves++;selection=hint=null;const outcome=tidy();if(!ended)tell(outcome.removed?'Mooie zet! Een volledige reeks is opgeruimd.':'Kaarten verplaatst.');persist();render({animate:true,kind:'move',completed:outcome.removed,completedRuns:outcome.completedRuns});if(outcome.removed){sound('complete');celebration(false)}else sound(outcome.flipped?'flip':'move');checkWin(outcome.removed);return true}
+function deal(){if(paused||ended||!game.stock.length)return;if(game.cols.some(c=>!c.length)){tell('Vul eerst de lege kolommen voordat je nieuwe kaarten deelt.');sound('error');return}history();let stack=game.stock.pop();for(let i=0;i<10;i++){stack[i].up=true;game.cols[i].push(stack[i])}game.moves++;selection=hint=null;const outcome=tidy();tell('Tien nieuwe kaarten uitgedeeld.');persist();render({animate:true,kind:'deal',completed:outcome.removed,completedRuns:outcome.completedRuns});sound(outcome.removed?'complete':'deal');if(outcome.removed)celebration(false);checkWin(outcome.removed)}
+function undo(){if(paused||ended||!undoStack.length)return;cancelRunAnimations();clearHintArrow();let x=undoStack.pop();game=x.game;ended=false;pendingWin=false;selection=hint=null;tell('Laatste zet teruggedraaid.');persist();render({animate:true,kind:'undo'});sound('undo')}
+function hintMove(){if(paused||ended)return;let choices=[];for(let i=0;i<10;i++)for(let j=0;j<game.cols[i].length;j++)if(canTake(i,j))for(let k=0;k<10;k++)if(canPlace(i,j,k)){let dst=game.cols[k],src=game.cols[i][j],match=dst.length&&dst.at(-1).s===src.s;choices.push({i,j,k,score:(match?100:0)+(j>0&&!game.cols[i][j-1].up?70:0)+(dst.length?10:0)})}choices.sort((a,b)=>b.score-a.score);if(!choices.length){tell(game.stock.length?'Geen verplaatsing gevonden. Probeer nieuwe kaarten te delen.':'Geen mogelijke zetten meer. Gebruik Ongedaan maken of begin opnieuw.');sound('error');return}hint=choices[0];selection={col:hint.i,index:hint.j};tell(`💡 Hint: pak de BLAUW gemarkeerde kaarten in kolom ${hint.i+1} en leg ze op de GOUD gemarkeerde kolom ${hint.k+1}.`);render();sound('hint')}
+function clickCard(col,index){if(paused||ended)return;if(selection&&canPlace(selection.col,selection.index,col)){move(selection.col,selection.index,col);return}if(canTake(col,index)){selection={col,index};hint=null;tell(`Kolom ${col+1} geselecteerd. Kies zelf een kolom of sleep de kaarten.`);sound('select')}else{selection=null;tell('Je kunt alleen een opeenvolgende reeks van dezelfde kaartsoort verplaatsen.');sound('error')}render()}
+function clickPile(col){if(selection&&move(selection.col,selection.index,col))return;selection=null;render()}
+function verticalSpacing(){let h=Math.max(380,window.innerHeight-255);let max=Math.max(...game.cols.map(c=>c.length));return Math.min(31,Math.max(12,Math.floor((h-130)/Math.max(1,max-1))))}
+function render({animate=false,kind='',completed=0,completedRuns=[]}={}){if(!game)return;const board=$('tableau'),before=animate?readPositions():new Map();board.replaceChildren();const spacing=verticalSpacing();for(let ci=0;ci<10;ci++){const col=game.cols[ci];let pile=document.createElement('div');pile.className='pile';pile.dataset.col=ci;pile.style.minHeight=Math.max(340,(col.length-1)*spacing+130)+'px';let empty=document.createElement('div');empty.className='empty';if(hint&&hint.k===ci&&col.length===0)empty.classList.add('hint-to');pile.append(empty);pile.addEventListener('click',e=>{if(e.target===pile||e.target===empty)clickPile(ci)});pile.addEventListener('dragover',e=>{if(drag)e.preventDefault()});pile.addEventListener('drop',e=>{e.preventDefault();if(drag)move(drag.col,drag.index,ci)});col.forEach((card,idx)=>{let el=document.createElement('div');el.className='card '+(card.up?'face'+(card.s%2?' red':''):'back');el.style.top=idx*spacing+'px';el.style.zIndex=idx+1;el.dataset.col=ci;el.dataset.index=idx;el.dataset.id=card.id;el.setAttribute('aria-label',card.up?`${card.r} ${SUITS[card.s]} in kolom ${ci+1}`:'Gedekte kaart');if(card.up){let val=card.r===1?'A':card.r===11?'J':card.r===12?'Q':card.r===13?'K':card.r;el.innerHTML=`<span class="corner">${val}<span>${SUITS[card.s]}</span></span><span class="center">${SUITS[card.s]}</span>`;if(selection&&selection.col===ci&&idx>=selection.index)el.classList.add('selected');if(hint&&hint.i===ci&&idx>=hint.j)el.classList.add('hint-from');if(hint&&hint.k===ci&&idx===col.length-1)el.classList.add('hint-to');el.draggable=canTake(ci,idx)&&!paused&&!ended;el.addEventListener('dragstart',e=>{if(!canTake(ci,idx)||paused||ended){e.preventDefault();return}drag={col:ci,index:idx};selection=drag;hint=null;clearHintArrow();e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain','spider');});el.addEventListener('dragend',()=>{drag=null;if(!hint&&selection&&selection.col===ci)render()});el.addEventListener('click',e=>{e.stopPropagation();clickCard(ci,idx)})}else el.addEventListener('click',e=>{e.stopPropagation();tell('Deze kaart ligt nog dicht. Maak eerst de bovenliggende kaarten vrij.')});pile.append(el)});board.append(pile)}$('moves').textContent=game.moves;$('progress').textContent=game.complete.length+' / 8';$('rounds').textContent=game.stock.length;$('finished').replaceChildren();for(let i=0;i<8;i++){let c=document.createElement('div');c.className='badgecard';c.textContent=i<game.complete.length?SUITS[game.complete[i]]:'·';if(i<game.complete.length&&game.complete[i]%2)c.style.color='#bc1d33';if(completed&&i>=game.complete.length-completed&&i<game.complete.length&&motionEnabled()){if(completedRuns.length)c.classList.add('awaiting-flight');else c.classList.add('newly-finished')}$('finished').append(c)}$('stock').replaceChildren();for(let i=0;i<game.stock.length;i++){let b=document.createElement('button');b.title='Deel tien nieuwe kaarten';b.className='stockcard';b.textContent='❖';b.onclick=deal;$('stock').append(b)}if(!game.stock.length){let x=document.createElement('div');x.className='stockcard depleted';$('stock').append(x)}$('undo').disabled=!undoStack.length||paused||ended;$('pause').disabled=ended;$('hint').disabled=paused||ended;$('pause').textContent=paused?'▶ Verder':'Ⅱ Pauze';$('clockLabel').textContent=game.mode==='free'?'Speeltijd':'Resterende tijd';$('clock').textContent=game.mode==='free'?format(elapsed):format(Math.max(0,baseTime[game.difficulty]-elapsed));$('clock').classList.toggle('clock-warning',game.mode==='timed'&&baseTime[game.difficulty]-elapsed<60&&!paused&&!ended);$('clock').style.color=game.mode==='timed'&&baseTime[game.difficulty]-elapsed<60?'#ffcc76':'';board.style.filter=paused?'blur(8px)':'';board.style.pointerEvents=paused?'none':'';if(animate)playCardMotion(before,kind,completedRuns);drawHintArrow()}
+function format(n){n=Math.floor(n);return String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0')}
+function showNotice(title,body,newGame=false){$('noticeTitle').textContent=title;$('noticeBody').textContent=body;$('noticeNew').style.display=newGame?'':'none';$('notice').querySelector('.dialog').classList.toggle('win',title==='Gewonnen!');$('notice').classList.add('show')}
+function checkWin(completed=0){if(!pendingWin)return;pendingWin=false;const winningGame=game;celebration(true);sound('win');setTimeout(()=>{if(game===winningGame&&game.complete.length===8&&ended)showResult('win')},motionEnabled()&&completed?RUN_FLIGHT_MS+(completed-1)*170+350:1400)}
+function togglePause(){if(!game||ended)return;paused=!paused;tell(paused?'Spel gepauzeerd. Klik op Verder om door te gaan.':'Veel speelplezier!');persist();render();sound('pause')}
+function tick(){let now=Date.now(),dt=Math.max(0,Math.min(2,(now-lastTick)/1000));lastTick=now;if(!game||paused||ended||modalOpen())return;elapsed+=dt;if(game.mode==='timed'&&elapsed>=baseTime[game.difficulty]){elapsed=baseTime[game.difficulty];ended=true;latestRecord=recordOutcome('timeout');showResult('timeout');sound('time');persist()}$('clock').textContent=game.mode==='free'?format(elapsed):format(Math.max(0,baseTime[game.difficulty]-elapsed));if(game.mode==='timed'){const remaining=baseTime[game.difficulty]-elapsed;$('clock').classList.toggle('clock-warning',remaining<60&&!ended);if(remaining<=60&&!minuteAlerted){minuteAlerted=true;sound('warning')}}const second=Math.floor(elapsed);if(second!==lastSavedSecond){lastSavedSecond=second;if(second%5===0)persist()}}
+$('settingsButton').onclick=openSettings;
+$('settingsCancel').onclick=()=>$('settings').classList.remove('show');
+$('settingsSave').onclick=()=>{options.sound=$('soundSetting').value==='on';options.animation=$('animationSetting').value==='on';try{localStorage.setItem(OPTIONS_KEY,JSON.stringify(options))}catch(e){}$('settings').classList.remove('show');render();tell('Instellingen opgeslagen.');sound('select')};
+$('homeButton').onclick=openHome;
+$('homeContinue').onclick=()=>{closeHome();if(game&&!ended){tell(paused?'Welkom terug! Klik op Verder om door te gaan.':'Veel speelplezier!');render()}};
+$('homeNew').onclick=()=>{closeHome();$('difficulty').value=String(game?.difficulty||1);$('timemode').value=game?.mode||'timed';$('setup').classList.add('show')};
+$('homeStats').onclick=()=>openStatistics('home');
+$('statsButton').onclick=()=>openStatistics();
+$('closeStats').onclick=closeStatistics;
+$('clearStats').onclick=()=>{if(!confirm('Weet je zeker dat je alle statistieken wilt wissen? Dit kan niet ongedaan worden gemaakt.'))return;stats={version:3,started:0,wins:0,timeouts:0,records:{}};if(game&&!ended){game.statsTracked=false;trackStart();persist()}else saveStats();openStatistics(statsReturn)};
+$('resultStats').onclick=()=>openStatistics('result');
+$('resultClose').onclick=()=>{$('result').classList.remove('show');render()};
+$('resultNew').onclick=()=>{$('result').classList.remove('show');$('new').click()};
+$('noticeNew').onclick=()=>{$('notice').classList.remove('show');$('new').click()};
+$('new').onclick=()=>{$('difficulty').value=String(game?.difficulty||1);$('timemode').value=game?.mode||'timed';$('setup').classList.add('show')};$('start').onclick=()=>{if(game&&!ended&&!confirm('Het huidige spel vervangen door een nieuw spel?'))return;begin()};$('cancelsetup').onclick=()=>{$('setup').classList.remove('show');if(!game)openHome()};$('undo').onclick=undo;$('hint').onclick=hintMove;$('pause').onclick=togglePause;$('rules').onclick=()=>showNotice('Spelregels','Maak acht volledige reeksen van koning (K) tot aas (A) in dezelfde kaartsoort. Leg een kaart op een kaart die één waarde hoger is. Een groep kaarten mag alleen samen worden verplaatst als alle kaarten opeenvolgend én van dezelfde kaartsoort zijn. Naar een lege kolom mag elke open kaart of geldige reeks. Wanneer je geen zet meer hebt, deel je onderaan rechts tien nieuwe kaarten uit. Dat kan alleen als geen kolom leeg is. Kies bij Nieuw spel tussen 1, 2 of 4 kaartsoorten en spelen met of zonder tijdslimiet.');$('noticeOk').onclick=()=>{$('notice').classList.remove('show');render()};$('fullscreen').onclick=()=>{if(!document.fullscreenElement)document.documentElement.requestFullscreen?.();else document.exitFullscreen?.()};window.addEventListener('resize',()=>{if(game)render()});window.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();undo()}if(e.key==='Escape'&&$('notice').classList.contains('show'))$('noticeOk').click();else if(e.key==='Escape'&&$('settings').classList.contains('show'))$('settingsCancel').click();else if(e.key==='Escape'&&$('statistics').classList.contains('show'))closeStatistics();else if(e.key==='Escape'&&$('result').classList.contains('show'))$('resultClose').click();if((e.target.tagName==='SELECT'||e.target.tagName==='INPUT')||modalOpen())return;if(e.key.toLowerCase()==='h')hintMove();if(e.key.toLowerCase()==='p')togglePause()});document.addEventListener('visibilitychange',()=>{lastTick=Date.now();if(document.hidden&&game&&!paused&&!ended){paused=true;tell('Het spel is automatisch gepauzeerd. Klik op Verder als je terug bent.');render()}persist()});window.addEventListener('beforeunload',persist);
+if(restore()){minuteAlerted=game.mode==='timed'&&(baseTime[game.difficulty]-elapsed<=60);tell('Welkom terug! Je vorige spel is bewaard.');render()}openHome();setInterval(tick,250);
+})();
+</script></body></html>
