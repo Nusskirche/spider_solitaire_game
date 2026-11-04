@@ -15,10 +15,10 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Check out source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up .NET 10
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: '10.0.x'
 
@@ -39,11 +39,40 @@ jobs:
           Compress-Archive -Path 'publish/*' -DestinationPath 'release/Omas-Spider-Solitaire-v3.2-win-x64.zip' -Force
           Get-ChildItem publish | Select-Object Name,Length | Format-Table
 
+      - name: Install Inno Setup compiler
+        shell: pwsh
+        run: |
+          $iscc = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe"
+          if (-not (Test-Path $iscc)) {
+            choco install innosetup --version=6.7.1 -y --no-progress
+            if ($LASTEXITCODE -ne 0) { throw "Inno Setup installation failed" }
+          }
+          if (-not (Test-Path $iscc)) { throw "Inno Setup compiler not found" }
+
+      - name: Build Dutch Windows setup wizard
+        shell: pwsh
+        run: |
+          $iscc = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe"
+          & $iscc "windows/installer.iss"
+          if ($LASTEXITCODE -ne 0) { throw "Inno Setup compilation failed" }
+          if (-not (Test-Path 'release/Omas-Spider-Solitaire-Setup-v3.2.0.exe')) {
+            throw "Installer EXE was not created"
+          }
+
       - name: Upload Windows download
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: Omas-Spider-Solitaire-Windows-x64
           path: release/Omas-Spider-Solitaire-v3.2-win-x64.zip
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Upload Windows setup wizard
+        uses: actions/upload-artifact@v7
+        with:
+          name: Omas-Spider-Solitaire-Installer-Windows-x64
+          path: release/Omas-Spider-Solitaire-Setup-v3.2.0.exe
+          archive: false
           if-no-files-found: error
           retention-days: 90
 
@@ -53,5 +82,5 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create $env:GITHUB_REF_NAME 'release/Omas-Spider-Solitaire-v3.2-win-x64.zip' --verify-tag --title "Oma's Spider Solitaire $env:GITHUB_REF_NAME" --notes "Windows x64, portable, volledig offline spel. Niet digitaal ondertekend; Microsoft SmartScreen kan een waarschuwing tonen."
+          gh release create $env:GITHUB_REF_NAME 'release/Omas-Spider-Solitaire-v3.2-win-x64.zip' 'release/Omas-Spider-Solitaire-Setup-v3.2.0.exe' --verify-tag --title "Oma's Spider Solitaire $env:GITHUB_REF_NAME" --notes "Windows x64, portable, volledig offline spel. Niet digitaal ondertekend; Microsoft SmartScreen kan een waarschuwing tonen."
           if ($LASTEXITCODE -ne 0) { throw "Release creation failed" }
