@@ -17,6 +17,19 @@ dotnet publish windows/OmasSpiderSolitaire.csproj --no-restore -c Release -r win
 
 Pak voor distributie **alle inhoud** van `publish/` samen. Afhankelijk van de WebView2 SDK kunnen ook native hulpbestanden aanwezig zijn; ga niet ervan uit dat alleen de EXE voldoende is.
 
+## Installatiewizard (Inno Setup)
+
+`windows/installer.iss` maakt een Nederlandstalige setup met standaard installatiestappen. GitHub Actions installeert hiervoor Inno Setup 6.7.1 tijdens het bouwen. Installeer via de download **Omas-Spider-Solitaire-Installer-Windows-x64** uit het Actions-artifact.
+
+- Per-gebruiker installatie in `%LOCALAPPDATA%\Programs\Omas Spider Solitaire`; geen UAC-beheerdersrechten nodig.
+- Installatiemap kiezen, startmenuvermelding en optionele bureaubladsnelkoppeling.
+- Na installatie meteen starten is mogelijk.
+- Uninstaller via Windows Instellingen → Geïnstalleerde apps.
+- Upgrades gebruiken een vaste Inno Setup AppId.
+- Spelstand en statistieken blijven bestaan bij verwijderen (de gegevensmap wordt bewust niet gewist).
+
+De portable ZIP blijft beschikbaar als alternatief. De setup is **niet digitaal ondertekend**; SmartScreen kan waarschuwen.
+
 ## Offline en gegevens bewaren
 
 - De HTML-code is een ingebedde resource, niet opgehaald via internet.
