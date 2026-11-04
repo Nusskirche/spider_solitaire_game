@@ -18,6 +18,12 @@ De map [`windows/`](windows/) bevat de broncode van een zelfstandige Windows For
 
 De Windows-build is **niet digitaal ondertekend**. SmartScreen kan daarom een waarschuwing geven. Zet Windows Defender of SmartScreen niet uit.
 
+## Installatiewizard (aanbevolen voor Windows)
+
+Onder **Actions → Windows EXE** vind je na een geslaagde build ook het artifact **Omas-Spider-Solitaire-Installer-Windows-x64**. Download en start `Omas-Spider-Solitaire-Setup-v3.2.0.exe` voor een Nederlandstalige installatiewizard. Deze installeert per gebruiker, zonder administratorrechten, en biedt een optionele bureaubladsnelkoppeling. Verwijderen kan via **Instellingen → Apps → Geïnstalleerde apps**.
+
+Bij een nieuwe Git-tag wordt de installer naast de portable ZIP aan de GitHub Release toegevoegd. **Let op:** de installer is niet digitaal ondertekend, dus SmartScreen kan nog een waarschuwing geven. Installatie en verwijderen veranderen niets aan de bewaarde spelstanden onder `%LOCALAPPDATA%\OmasSpiderSolitaire`.
+
 ## Functies
 
 - 104 speelkaarten, tien kolommen, vijf uitdeelrondes.
